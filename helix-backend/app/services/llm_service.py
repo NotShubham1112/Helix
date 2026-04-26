@@ -80,7 +80,7 @@ def call_gemma(prompt: str, context: Optional[str] = None) -> str:
         return _call_openrouter(prompt)
     
     return OllamaService.call_model(
-        model="gemma:4b",
+        model="gemma4:e2b",
         prompt=prompt,
         system=HELIX_CORE_PROMPT,
         temperature=0.2,
@@ -96,7 +96,7 @@ def call_nemotron(prompt: str) -> str:
         return _call_openrouter(prompt)
     
     return OllamaService.call_model(
-        model="nemotron:4b",
+        model="nemotron-3-nano:4b",
         prompt=prompt,
         system=SYSTEM_CONTEXT,
         temperature=0.3,

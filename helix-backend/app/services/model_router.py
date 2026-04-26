@@ -25,6 +25,7 @@ class TaskType(str, Enum):
     DRUG_ANALYSIS = "drug_analysis"
     SYMPTOM_ANALYSIS = "symptom_analysis"
     EMERGENCY_DETECTION = "emergency"
+    VISION_ANALYSIS = "vision_analysis"  # Multimodal extraction
 
 
 class ModelRouter:
@@ -32,25 +33,26 @@ class ModelRouter:
     
     # Model assignments by task type
     ROUTING_MAP = {
-        TaskType.ROUTING: "nemotron:4b",           # Fast classification
-        TaskType.FAST_RESPONSE: "nemotron:4b",     # Quick turnaround
-        TaskType.DEEP_REASONING: "gemma:4b",       # Deep analysis
-        TaskType.LAB_ANALYSIS: "gemma:4b",         # Medical knowledge
-        TaskType.DRUG_ANALYSIS: "gemma:4b",        # Pharmacology
-        TaskType.SYMPTOM_ANALYSIS: "gemma:4b",     # Clinical reasoning
-        TaskType.EMERGENCY_DETECTION: "nemotron:4b"  # Fast flag
+        TaskType.ROUTING: "nemotron-3-nano:4b",           # Fast classification
+        TaskType.FAST_RESPONSE: "nemotron-3-nano:4b",     # Quick turnaround
+        TaskType.DEEP_REASONING: "gemma4:e2b",       # Deep analysis
+        TaskType.LAB_ANALYSIS: "gemma4:e2b",         # Medical knowledge
+        TaskType.DRUG_ANALYSIS: "gemma4:e2b",        # Pharmacology
+        TaskType.SYMPTOM_ANALYSIS: "gemma4:e2b",     # Clinical reasoning
+        TaskType.EMERGENCY_DETECTION: "nemotron-3-nano:4b",  # Fast flag
+        TaskType.VISION_ANALYSIS: "qwen3-vl:8b"     # Multimodal/OCR
     }
     
     # Model configuration
     MODEL_CONFIG = {
-        "nemotron:4b": {
+        "nemotron-3-nano:4b": {
             "latency": "low",
             "accuracy": "medium",
             "use_cases": ["routing", "classification", "fast response"],
             "temperature": 0.3,
             "max_tokens": 512
         },
-        "gemma:4b": {
+        "gemma4:e2b": {
             "latency": "medium",
             "accuracy": "high",
             "use_cases": ["reasoning", "analysis", "context"],
@@ -70,7 +72,7 @@ class ModelRouter:
         Returns:
             Model name
         """
-        return ModelRouter.ROUTING_MAP.get(task_type, "gemma:4b")
+        return ModelRouter.ROUTING_MAP.get(task_type, "gemma4:e2b")
     
     @staticmethod
     def get_config_for_model(model: str) -> dict:

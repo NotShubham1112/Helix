@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Helix Report Analyzer MVP</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f9fafb; color: #111827; }
+        .card { border: 1px solid #e5e7eb; padding: 20px; border-radius: 12px; margin-top: 20px; background-color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .confidence { color: #059669; font-size: 0.9em; margin-top: 10px; }
+        .source-quote { font-style: italic; color: #4B5563; background: #F3F4F6; padding: 4px 8px; border-radius: 4px; }
+        textarea { width: 100%; box-sizing: border-box; border: 1px solid #D1D5DB; border-radius: 8px; padding: 12px; font-family: inherit; margin-bottom: 10px; }
+        .btn-container { display: flex; gap: 10px; margin-top: 10px; }
+        button { background-color: #2563EB; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        button:hover { background-color: #1D4ED8; }
+        button.secondary { background-color: #4B5563; }
+        .category { font-weight: bold; font-size: 1.2em; }
+        .normal { color: #059669; }
+        .warning-text { color: #D97706; font-size: 0.85em; font-weight: bold; margin-bottom: 10px; display: block; }
+        .warning { color: #D97706; }
+        .danger { color: #DC2626; }
+        #error { color: #DC2626; margin-top: 15px; font-weight: bold; }
+        .loading { color: #2563EB; font-style: italic; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <h2>💉 Helix HbA1c Pipeline (Local MVP)</h2>
+    <p>Analyze medical reports via raw text or image upload.</p>
+    
+    <div class="card">
+        <h3>Option A: Text Input</h3>
+        <textarea id="ocrInput" rows="6" placeholder="Paste OCR text here... e.g. HbA1c 6.5%"></textarea>
+        <button onclick="analyzeText()">Analyze Text</button>
+    </div>
+
+    <div class="card">
+        <h3>Option B: Image Upload</h3>
+        <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 10px;"><br>
+        <button class="secondary" onclick="analyzeImage()">Upload & Run OCR</button>
+    </div>
+
+    <div id="loading" class="loading">Processing pipeline... this may take a moment for OCR/LLM fallback.</div>
+    <p id="error"></p>
+
+    <div id="result" class="card" style="display:none;">
+        <span id="warningMsg" class="warning-text" style="display:none;">⚠️ Warning: <span id="warnText"></span></span>
+        <div class="category" id="category"></div>
+        <p id="msg" style="margin-top: 8px;"></p>
+        <hr style="border-top: 1px solid #e5e7eb; margin: 15px 0;">
+        <p><strong>Extracted Value:</strong> <span id="val" style="font-weight: 600; font-size: 1.1em;"></span></p>
+        <p class="confidence">Confidence: <span id="conf" style="font-weight: 600;"></span></p>
+        <p class="source-quote" style="font-size: 0.9em;">Source Trace: "<span id="source"></span>"</p>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api/mvp';
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('error').innerText = '';
+        }
+
+        function displayResult(data) {
+            const resultEl = document.getElementById('result');
+            const warnEl = document.getElementById('warningMsg');
+            
+            if (data.status === 'success' && data.parameter) {
+                resultEl.style.display = 'block';
+                
+                if (data.warning) {
+                    warnEl.style.display = 'block';
+                    document.getElementById('warnText').innerText = data.warning;
+                } else {
+                    warnEl.style.display = 'none';
+                }
+
+                const catEl = document.getElementById('category');
+                catEl.innerText = data.interpretation.category;
+                
+                if (data.interpretation.category === 'Normal') catEl.className = 'category normal';
+                else if (data.interpretation.category === 'Prediabetes') catEl.className = 'category warning';
+                else catEl.className = 'category danger';
+                
+                document.getElementById('msg').innerText = data.interpretation.message;
+                document.getElementById('val').innerText = `${data.parameter.value} ${data.parameter.unit}`;
+                document.getElementById('conf').innerText = `${(data.parameter.confidence * 100).toFixed(0)}%`;
+                document.getElementById('source').innerText = data.parameter.source_text;
+            } else {
+                document.getElementById('error').innerText = "Pipeline Failed: " + (data.error || "Unknown error");
+            }
+        }
+
+        async function analyzeText() {
+            const text = document.getElementById('ocrInput').value;
+            if (!text.trim()) return alert("Please enter text.");
+            
+            showLoading(true);
+            document.getElementById('result').style.display = 'none';
+            
+            try {
+                const res = await fetch(`${API_BASE}/analyze-report`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ocr_text: text})
+                });
+                displayResult(await res.json());
+            } catch (err) {
+                document.getElementById('error').innerText = "Network Error: Is backend running?";
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function analyzeImage() {
+            const fileInput = document.getElementById('imageInput');
+            if (!fileInput.files.length) return alert("Please select an image.");
+            
+            showLoading(true);
+            document.getElementById('result').style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            try {
+                const res = await fetch(`${API_BASE}/analyze-image`, {
+                    method: 'POST',
+                    body: formData
+                });
+                displayResult(await res.json());
+            } catch (err) {
+                document.getElementById('error').innerText = "Network Error: Is backend running?";
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>
