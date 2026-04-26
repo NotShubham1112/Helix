@@ -4,6 +4,7 @@
 
 ---
 
+<!--
 ## 👨‍💻 Author
 
 <div align="center">
@@ -24,6 +25,7 @@
     🏠 <a href="#">Wiki Home</a>
   </p>
 </div>
+-->
 
 ---
 
