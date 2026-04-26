@@ -1,12 +1,39 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150x150/1D1D1D/5AFF88?text=Med-Intel" alt="Med-Intel Logo" width="120" height="120">
+  <img src="image.png" alt="Med-Intel Banner">
+</div>
+
+---
+
+## 👨‍💻 Author
+
+<div align="center">
+  <h3>Created by Shubham Kambli</h3>
+  <p><i>Founder of COSMIC • AI Engineer • Open-Source Builder</i></p>
+  
+  <p>19-year-old Founder of COSMIC, AI engineer, and open-source builder creating production-ready tools at the intersection of artificial intelligence and software engineering.</p>
+  
+  <p>
+    🌐 <a href="https://shubhamkambli.com">shubhamkambli.com</a> • 
+    📧 <a href="mailto:shubhamkambli1112@gmail.com">shubhamkambli1112@gmail.com</a> • 
+    💼 <a href="#">LinkedIn</a> • 
+    🐦 <a href="https://twitter.com/Not_Shubham_111">@Not_Shubham_111</a>
+  </p>
+  
+  <p>
+    📖 <a href="#">View Full Portfolio</a> • 
+    🏠 <a href="#">Wiki Home</a>
+  </p>
+</div>
+
+---
+
+<div align="center">
   <h1>Med-Intel</h1>
   <p><b>Advanced Clinical Data Analysis & AI Dashboard</b></p>
   <p>
     <a href="#features">Features</a> •
     <a href="#tech-stack">Tech Stack</a> •
-    <a href="#getting-started">Getting Started</a> •
-    <a href="#author">Author</a>
+    <a href="#getting-started">Getting Started</a>
   </p>
 </div>
 
@@ -76,26 +103,3 @@
 
 4. **Access the Dashboard**
    Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
-
----
-
-## 👨‍💻 Author
-
-<div align="center">
-  <h3>Created by Shubham Kambli</h3>
-  <p><i>Founder of COSMIC • AI Engineer • Open-Source Builder</i></p>
-  
-  <p>19-year-old Founder of COSMIC, AI engineer, and open-source builder creating production-ready tools at the intersection of artificial intelligence and software engineering.</p>
-  
-  <p>
-    🌐 <a href="https://shubhamkambli.com">shubhamkambli.com</a> • 
-    📧 <a href="mailto:shubhamkambli1112@gmail.com">shubhamkambli1112@gmail.com</a> • 
-    💼 <a href="#">LinkedIn</a> • 
-    🐦 <a href="https://twitter.com/Not_Shubham_111">@Not_Shubham_111</a>
-  </p>
-  
-  <p>
-    📖 <a href="#">View Full Portfolio</a> • 
-    🏠 <a href="#">Wiki Home</a>
-  </p>
-</div>
